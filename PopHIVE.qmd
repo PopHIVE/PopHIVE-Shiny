@@ -1084,7 +1084,7 @@ ipd1 <- readRDS(url('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads
   group_by(st) %>%
   summarize( N_IPD= sum(N_IPD))
 
-uad <- readxl::read_excel(url('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Pulled%20Data/pneumococcus/SSUAD/ramirez_ofid_2025_ofae727.xlsx')) %>%
+uad <- read_csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Pulled%20Data/pneumococcus/ramirez_ofid_2025_ofae727.csv') %>%
   mutate(N_SSUAD= over65 + a50_64_with_indication + a50_64_no_indication ) %>%
   full_join(ipd1, by='st') %>%
   filter(!is.na(N_SSUAD) & !is.na(N_IPD))
@@ -1274,9 +1274,137 @@ Variation in vaccine uptake rates based on insurance status
 
 ------------------------------------------------------------------------
 
-## Youth Wellbeing
+## Chronic disease, injury, and overdose
 
 ------------------------------------------------------------------------
+
+::: panel-tabset
+### Obesity
+
+```{r}
+#| context: data
+
+diab_obesity <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/repo_reorg/Data/Archive/Cosmos%20ED/diabetes_obesity.parquet')
+
+```
+
+::: panel-tabset
+
+#### Map of obesity prevalence (all ages)
+
+```{r}
+#| panel: fill
+
+pal1 <- viridis_pal()(4)
+
+obesity_diabetes_map <-  diab_obesity %>%
+  filter( age_level=='Total'  & geography %in% state.name & outcome_name=='obesity') %>%
+  rename(state=geography, Percent=Outcome_value1) %>%
+  usmap::plot_usmap(regions = "state", data = ., values = "Percent") +
+  scale_fill_gradientn(
+    colors = pal1,
+    na.value = "#440154FF"
+  ) +
+  ggtitle(paste("Obesity prevalence (BMI>30) (all ages)"))
+
+ggplotly(obesity_diabetes_map)
+
+```
+
+Data are from Epic Cosmos.
+
+#### Obesity prevalence by state and age
+
+```{r}
+#| panel: fill
+
+obesity_age_p <-  diab_obesity %>%
+  filter(geography=='New York'  & !is.na(age_level) & outcome_name=='obesity') %>%
+  ggplot(aes(x=age_level, y=Outcome_value1)) +
+  geom_point()+
+  ylab('Percent with obesity')+
+  ylim(0,75) +
+  theme_minimal()+
+  ggtitle(paste0('Percent of population with obesity in', 'New York'))
+
+ggplotly(obesity_age_p)
+
+
+```
+
+
+Data are from Epic Cosmos
+
+#### Obesity vs diabetes prevalence (all ages)
+
+```{r}
+#| panel: fill
+
+obesity_diabetes_p <-  diab_obesity %>%
+  filter( age_level=='Total'  & geography %in% state.name) %>%
+  reshape2::dcast(geography + age_level ~ outcome_name, value.var='Outcome_value1') %>%
+  ggplot(aes(x=obesity, y=diabetes, text=geography)) +
+  geom_point()+
+  xlab('Percent with obesity')+
+  ylab('Percent with diabetes')+
+  theme_minimal()+
+  ggtitle(paste0('Comparison of obesity vs diabetes rates by state'))
+
+ggplotly(obesity_diabetes_p)
+
+```
+
+Data are from Epic Cosmos
+
+:::
+
+### Diabetes 
+
+::: panel-tabset
+
+#### Map of diabetes prevalence (all ages)
+
+```{r}
+#| panel: fill
+
+pal1 <- viridis_pal()(4)
+
+obesity_diabetes_map <-  diab_obesity %>%
+  filter( age_level=='Total'  & geography %in% state.name & outcome_name=='diabetes') %>%
+  rename(state=geography, Percent=Outcome_value1) %>%
+  usmap::plot_usmap(regions = "state", data = ., values = "Percent") +
+  scale_fill_gradientn(
+    colors = pal1,
+    na.value = "#440154FF"
+  ) +
+  ggtitle(paste("Diabetes prevalence (HbA1C>37) (all ages)"))
+
+ggplotly(obesity_diabetes_map)
+
+```
+#### Diabetes prevalence by state and age
+
+```{r}
+#| panel: fill
+
+diabetes_age_p <-  diab_obesity %>%
+   filter(geography=='New York'  & !is.na(age_level) & outcome_name=='diabetes') %>%
+   ggplot(aes(x=age_level, y=Outcome_value1)) +
+   geom_point()+
+   ylab('Percent with diabetes')+
+  ylim(0,42) +
+   theme_minimal()+
+   ggtitle('Percent of population with diabetes in New York')
+ 
+ggplotly(diabetes_age_p)
+
+```
+
+Data are from Epic Cosmos. Diabetes is defined based on having had a hemoglobin A1C level >7
+
+:::
+
+### Self-harm
 
 ```{r youth_self_harm_data}
 #| context: data
@@ -1289,12 +1417,7 @@ s1 <- read.csv('https://raw.githubusercontent.com/ysph-dsde/PopHIVE_DataHub/refs
   filter(Intent=='Self-Harm' & Age.Group %in% c('10 to 14','15 to 19')) %>%
   mutate(Crude.Rate=as.numeric(Crude.Rate))
 
-
-
 ```
-
-::: panel-tabset
-### Self-harm
 
 ::: panel-tabset
 #### National (WISQARS)
@@ -1321,55 +1444,10 @@ These data come from the [CDC WISQARS](https://wisqars.cdc.gov/) platform, which
 #| panel: fill
 
 ```
-:::
 
-### Road accidents
+::: 
 
-*Coming soon!*
-
-::: panel-tabset
-#### Epic Cosmos
-
-*Coming soon!*
-
-```{r}
-#| panel: fill
-
-```
-:::
-
-### Overdose attempts
-
-*Coming soon!*
-
-::: panel-tabset
-#### Epic Cosmos
-
-*Coming soon!*
-
-```{r}
-#| panel: fill
-
-```
-:::
-
-### Obesity
-
-*Coming soon!*
-
-::: panel-tabset
-#### Epic Cosmos
-
-*Coming soon!*
-
-```{r}
-#| panel: fill
-
-```
-:::
-:::
-
-## Opioids
+### Drug overdoses
 
 ```{r opioid_data}
 #| context: data
@@ -1830,13 +1908,11 @@ output$opioid_bar_graph_2022 <- renderPlotly({
   
 })
 
-
-
-
 ```
 
 ::: panel-tabset
-### Trends in national healthcare incidents
+
+#### National trends in opioid hospitalizations and deaths
 
 ```{r}
 #| panel: fill
@@ -1844,30 +1920,57 @@ plotlyOutput("opioid_time_series_interactive_2")
 
 ```
 
-### Map of opioid overdoses
+#### ED visits for overdose attempts by state
 
-AHRQ hospitalizations
+*Coming soon!*
+
+```{r}
+#| panel: fill
+
+```
+
+
+#### Map of opioid overdose hospitalizations and deaths
+
+Hospitalizations (AHRQ) and deaths (NCHS)
 
 ```{r}
 #| panel: fill
   ggplotly(ahrq_map_plot, tooltip = "text")
-```
-
-CDC WONDER
-
-```{r}
-#| panel: fill
   ggplotly(wonder_map_plot, tooltip = "text")
 
 ```
 
-### Type of opioid
+#### Type of opioid
 
 ```{r}
 #| panel: fill
 waffle::iron(w1, w2, w3)
 ```
+
 :::
+
+### Road accidents
+
+*Coming soon!*
+
+::: panel-tabset
+#### Epic Cosmos
+
+*Coming soon!*
+
+```{r}
+#| panel: fill
+
+```
+:::
+
+
+:::
+
+
+
+
 
 ------------------------------------------------------------------------
 
