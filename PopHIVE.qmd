@@ -1274,7 +1274,7 @@ Variation in vaccine uptake rates based on insurance status
 
 ------------------------------------------------------------------------
 
-## Chronic disease, injury, and overdose
+## Chronic disease
 
 ------------------------------------------------------------------------
 
@@ -1438,6 +1438,15 @@ Data are from Epic Cosmos. Diabetes is defined based on having had a hemoglobin 
 
 :::
 
+::: 
+
+------------------------------------------------------------------------
+
+## Injury and overdose
+
+------------------------------------------------------------------------
+
+::: panel-tabset
 ### Self-harm
 
 ```{r youth_self_harm_data}
@@ -1985,7 +1994,7 @@ overdose_search_p <-  g1_overdose %>%
   theme_minimal()+
   ggtitle(paste0('Search volume for "overdose" over previous 12m ', input$state.select.google_nal ))
 
-ggplotly(input$state.select.google_nal)
+ggplotly(overdose_search_p)
 })
 ```
 
