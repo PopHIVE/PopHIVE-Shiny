@@ -1327,7 +1327,7 @@ obesity_age_p <-  diab_obesity %>%
   ylab('Percent with obesity')+
   ylim(0,75) +
   theme_minimal()+
-  ggtitle(paste0('Percent of population with obesity in ', input$state.select.obesity_epic ))
+  ggtitle(paste0('Percent of population with obesity by state'))
 
 ggplotly(obesity_age_p)
 })
@@ -1339,7 +1339,7 @@ ggplotly(obesity_age_p)
 #| panel: toolbar
 
 selectInput("state.select.obesity_epic", "State:", 
-            choices=state.name, selected='New York')
+            choices=state.name, selected='New York', multiple=T)
 ```
 
 ```{r}
@@ -1413,7 +1413,7 @@ diabetes_age_p <-  diab_obesity %>%
    ylab('Percent with diabetes')+
   ylim(0,20) +
    theme_minimal()+
-   ggtitle(paste0('Percent of population with diabetes in ', input$state.select.diabetes_epic))
+   ggtitle(paste0('Percent of population with diabetes by state'))
  
 ggplotly(diabetes_age_p)
 })
@@ -1424,7 +1424,7 @@ ggplotly(diabetes_age_p)
 #| panel: toolbar
 
 selectInput("state.select.diabetes_epic", "State:", 
-            choices=state.name, selected='New York')
+            choices=state.name, selected='New York', multiple = T)
 ```
 
 ```{r}
