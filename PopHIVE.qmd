@@ -1316,22 +1316,37 @@ Data are from Epic Cosmos.
 #### Obesity prevalence by state and age
 
 ```{r}
-#| panel: fill
+#| context: server
+
+output$obesity_epic_plot <- renderPlotly({
 
 obesity_age_p <-  diab_obesity %>%
-  filter(geography=='New York'  & !is.na(age_level) & outcome_name=='obesity') %>%
-  ggplot(aes(x=age_level, y=Outcome_value1)) +
+  filter(geography %in% c(input$state.select.obesity_epic)  & !is.na(age_level) & outcome_name=='obesity') %>%
+  ggplot(aes(x=age_level, y=Outcome_value1, color=geography)) +
   geom_point()+
   ylab('Percent with obesity')+
   ylim(0,75) +
   theme_minimal()+
-  ggtitle(paste0('Percent of population with obesity in', 'New York'))
+  ggtitle(paste0('Percent of population with obesity in ', input$state.select.obesity_epic ))
 
 ggplotly(obesity_age_p)
+})
 
 
 ```
 
+```{r}
+#| panel: toolbar
+
+selectInput("state.select.obesity_epic", "State:", 
+            choices=state.name, selected='New York')
+```
+
+```{r}
+#| panel: fill
+plotlyOutput("obesity_epic_plot")
+
+```
 
 Data are from Epic Cosmos
 
@@ -1377,28 +1392,47 @@ obesity_diabetes_map <-  diab_obesity %>%
     colors = pal1,
     na.value = "#440154FF"
   ) +
-  ggtitle(paste("Diabetes prevalence (HbA1C>37) (all ages)"))
+  ggtitle(paste("Diabetes prevalence (HbA1C>7) (all ages)"))
 
 ggplotly(obesity_diabetes_map)
 
 ```
+
 #### Diabetes prevalence by state and age
 
 ```{r}
-#| panel: fill
+#| context: server
 
+output$diabetes_epic_plot <- renderPlotly({
+  
+  print(input$state.select.diabetes_epic)
 diabetes_age_p <-  diab_obesity %>%
-   filter(geography=='New York'  & !is.na(age_level) & outcome_name=='diabetes') %>%
-   ggplot(aes(x=age_level, y=Outcome_value1)) +
+   filter( geography %in% c(input$state.select.diabetes_epic)  & !is.na(age_level) & outcome_name=='diabetes') %>%
+   ggplot(aes(x=age_level, y=Outcome_value1, color=geography)) +
    geom_point()+
    ylab('Percent with diabetes')+
-  ylim(0,42) +
+  ylim(0,20) +
    theme_minimal()+
-   ggtitle('Percent of population with diabetes in New York')
+   ggtitle(paste0('Percent of population with diabetes in ', input$state.select.diabetes_epic))
  
 ggplotly(diabetes_age_p)
+})
+```
+
+
+```{r}
+#| panel: toolbar
+
+selectInput("state.select.diabetes_epic", "State:", 
+            choices=state.name, selected='New York')
+```
+
+```{r}
+#| panel: fill
+plotlyOutput("diabetes_epic_plot")
 
 ```
+
 
 Data are from Epic Cosmos. Diabetes is defined based on having had a hemoglobin A1C level >7
 
@@ -1690,6 +1724,20 @@ waffle_2022 <- subset %>%
   
 ```
 
+```{r google_data}
+#| context: server
+
+g1_overdose <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Archive/google_overdose/OD_search_state_recent12m.csv') %>%
+  group_by(state) %>%
+    mutate( Volume=100*naloxone_search_12m/max(naloxone_search_12m, na.rm=T),
+           Volume=round(Volume),
+           date=as.Date(date)) %>%
+  filter(date>='2015-01-01') 
+
+```
+
+
+
 ```{r opioid_plots}
 #| context: server
 
@@ -1917,6 +1965,40 @@ output$opioid_bar_graph_2022 <- renderPlotly({
 ```{r}
 #| panel: fill
 plotlyOutput("opioid_time_series_interactive_2")
+
+```
+
+#### Trends in searches for naloxone by state
+
+
+```{r opioid_search_plots}
+#| context: server
+
+output$nal_search_plot <- renderPlotly({
+  
+overdose_search_p <-  g1_overdose %>%
+  filter(state==input$state.select.google_nal ) %>%
+  ggplot(aes(x=date, y=Volume)) +
+  geom_point()+
+  ylab('Search volume for "Naloxone"')+
+  ylim(0,100) +
+  theme_minimal()+
+  ggtitle(paste0('Search volume for "overdose" over previous 12m ', input$state.select.google_nal ))
+
+ggplotly(input$state.select.google_nal)
+})
+```
+
+```{r}
+#| panel: toolbar
+
+selectInput("state.select.google_nal", "State:", 
+            choices=state.name, selected='New York')
+```
+
+```{r}
+#| panel: fill
+plotlyOutput("nal_search_plot")
 
 ```
 
