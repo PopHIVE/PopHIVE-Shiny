@@ -1292,7 +1292,7 @@ diab_obesity <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/r
 
 #### Map of obesity prevalence (all ages)
 
-```{r}
+```{r, fig.width=8, fig.height=8}
 #| panel: fill
 
 pal1 <- viridis_pal()(4)
@@ -1352,7 +1352,7 @@ Data are from Epic Cosmos
 
 #### Obesity vs diabetes prevalence (all ages)
 
-```{r}
+```{r, fig.width=8, fig.height=8}
 #| panel: fill
 
 obesity_diabetes_p <-  diab_obesity %>%
@@ -1427,7 +1427,7 @@ selectInput("state.select.diabetes_epic", "State:",
             choices=state.name, selected='New York', multiple = T)
 ```
 
-```{r}
+```{r, fig.width=8, fig.height=8}
 #| panel: fill
 plotlyOutput("diabetes_epic_plot")
 
@@ -1456,21 +1456,20 @@ Data are from Epic Cosmos. Diabetes is defined based on having had a hemoglobin 
 #data from WISQARS dashboard; manual download 2/27/2025
 #Self-Harm All Causes Nonfatal Emergency Department Visits and Rates per 100,000 ;Data Years: 2001 to 2022, United States, 0 to 4 through 15 to 19, Males, Females, Disposition: All Cases
 
-s1 <- read.csv('https://raw.githubusercontent.com/ysph-dsde/PopHIVE_DataHub/refs/heads/main/Data/Pulled%20Data/youth_wellbeing/WISQARS/youth_self_harm.csv') %>%
-  filter(Intent=='Self-Harm' & Age.Group %in% c('10 to 14','15 to 19')) %>%
-  mutate(Crude.Rate=as.numeric(Crude.Rate))
+s1 <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/wisqars_self_harm.csv') %>%
+  filter( age_level %in% c('10 to 14','15 to 19','20 to 24', '25 to 29')) 
 
 ```
 
 ::: panel-tabset
 #### National (WISQARS)
 
-```{r}
+```{r, fig.width=8, fig.height=8}
 #| panel: fill
 
-p1 <- ggplot(s1, aes(x=Year, y=Crude.Rate, group=Sex, color=Sex, linetype=Sex)) +
+p1 <- ggplot(s1, aes(x=Year, y=Outcome_value1, group=Sex, color=Sex, linetype=Sex)) +
   geom_line()+
-  facet_wrap(~Age.Group) +
+  facet_wrap(~age_level) +
   theme_classic() +
   ylab('Events/100,000 people')+
   ggtitle('Self harm among youths (CDC/WISQARS)')
