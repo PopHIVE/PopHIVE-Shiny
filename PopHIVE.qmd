@@ -285,7 +285,7 @@ ggplotly(p1)
 #### Overall Trends
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select2", "State:", 
             choices=state.name, selected='New York')
@@ -305,7 +305,7 @@ Viral levels in the community can be measured in different ways, which is import
 #### Trends in positive tests
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("hhs.region.select", "Region:", 
             choices=unique(nrevss_rsv_ts$hhs_abbr), selected='CT,ME,MA,NH,RI,VT')
@@ -322,7 +322,7 @@ These data come from the NREVSS surveillance system, which is comprised of labor
 #### By age
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select3", "State:", 
             choices=state.name, selected='New York')
@@ -346,7 +346,7 @@ The hospitalization data comes from the RSV-NET, a CDC-supported network of site
 #### Map of ED visits (state)
 
 ```{r}
-#| panel: toolbar
+
 
 sliderInput("selected_date", label=NULL, 
                   min = min(epic_ed_combo$date), 
@@ -409,7 +409,7 @@ The maps shows the percentage of ED visits in each jurisdiction caused by RSV. S
 *Coming soon*
 
 ```{r}
-#| panel: toolbar
+
 
 # sliderInput("date.select2", label=NULL, 
 #                   min = min(epic_ed_combo$date), 
@@ -546,7 +546,7 @@ output$epicMapflu <- renderPlotly({
 #### Overall Trends
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select2.flu", "State:", 
             choices=state.name, selected='New York')
@@ -568,7 +568,7 @@ plotlyOutput("distPlotflu_dwh")
 #### By age
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select3.flu", "State:", 
             choices=state.name, selected='New York')
@@ -590,7 +590,7 @@ Data are smoothed with a 3 week average for vizualization.
 #### Map of ED visits (state)
 
 ```{r}
-#| panel: toolbar
+
 
 sliderInput("selected_date.flu", label=NULL, 
             min = min(epic_ed_combo$date), 
@@ -767,7 +767,7 @@ output$epicMapcovid <- renderPlotly({
 #### Overall Trends
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select2.covid", "State:", 
             choices=state.name, selected='New York')
@@ -789,7 +789,7 @@ plotlyOutput("distPlotcovid_dwh")
 #### By age
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select3.covid", "State:", 
             choices=state.name, selected='New York')
@@ -811,7 +811,7 @@ Data are smoothed with a 3 week average for vizualization.
 #### Map of ED visits (state)
 
 ```{r}
-#| panel: toolbar
+
 
 sliderInput("selected_date.covid", label=NULL, 
             min = min(epic_ed_combo$date), 
@@ -927,7 +927,7 @@ output$stGeographyPlot <- renderPlotly({
 #### Trends in serotype frequency
 
 ```{r}
-#| panel: toolbar
+
 selectInput("select.st",
             "Select serotype:",
             all.sts,
@@ -1055,7 +1055,7 @@ This shows the decreases in serotypes targeted by PCV13 (left) and increases in 
 Some serotypes have a similar distribution across the US, while others (e.g., serotype 4) have distinct geographic patterns. serotype 4 has been largely confined to the western US in recent years and is largely found among people who are homeless. Data from 2019 IPD (Beall et al, JID 2022 10.1093/infdis/jiac058)
 
 ```{r}
-#| panel: toolbar
+
 selectInput("select.st2",
             "Select serotype:",
             unique(ipd_serotype_state$sero),
@@ -1241,7 +1241,7 @@ ggplotly(plot_vax, tooltip='text')
 Variation in vaccine uptake based on how urban an area is.
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("select.vax2", "Vaccine:", 
             choices=unique(vax_urban$Vaccine), selected='PCV')
@@ -1336,7 +1336,7 @@ ggplotly(obesity_age_p)
 ```
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select.obesity_epic", "State:", 
             choices=state.name, selected='New York', multiple=T)
@@ -1379,7 +1379,7 @@ Data are from Epic Cosmos
 
 #### Map of diabetes prevalence (all ages)
 
-```{r}
+```{r, fig.width=8, fig.height=8}
 #| panel: fill
 
 pal1 <- viridis_pal()(4)
@@ -1421,7 +1421,7 @@ ggplotly(diabetes_age_p)
 
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select.diabetes_epic", "State:", 
             choices=state.name, selected='New York', multiple = T)
@@ -1998,7 +1998,7 @@ ggplotly(overdose_search_p)
 ```
 
 ```{r}
-#| panel: toolbar
+
 
 selectInput("state.select.google_nal", "State:", 
             choices=state.name, selected='New York')
