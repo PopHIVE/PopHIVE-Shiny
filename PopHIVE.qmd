@@ -1115,22 +1115,8 @@ Vaccination of children across the US, by state and vaccine. These data come fro
 #pediatric vaccine yptake
 #https://data.cdc.gov/Child-Vaccinations/Vaccination-Coverage-among-Young-Children-0-35-Mon/fhky-rtsk/about_data
 
-# csv_to_parquet('./Data/vax/Vaccination_Coverage_among_Young_Children__0-35_Months__20250204.csv',path_to_parquet ='./Data/vax/peds_vax.parquet')
-#this breaks out the age data; also has info on income, race, urbanicity, etc
 
-vax_age <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Pulled%20Data/vax/peds_vax.parquet') %>%
-  rename(birth_year = `Birth Year/Birth Cohort`, dim1=`Dimension Type`, age=Dimension,vax_uptake=`Estimate (%)`, samp_size_vax=`Sample Size`) %>%
-  collect() %>%
-  filter(birth_year==2021 & dim1=='Age') %>%
-  dplyr::select(Vaccine,Geography, Dose, dim1, vax_uptake,samp_size_vax, age) %>%
-  filter(age=='35 Months' & Geography %in% state.name &
-           (Vaccine %in% c('≥1 Dose MMR','≥1 Dose Varicella' ) | 
-              (Vaccine=='DTaP' & Dose =='≥4 Doses') | 
-              (Vaccine=='Hep A' & Dose =='≥2 Doses') | 
-              (Vaccine=='Hep B' & Dose =='≥3 Doses') | 
-              (Vaccine=='Hib' & Dose =='Full Series') | 
-              (Vaccine=='PCV' & Dose =='≥4 Doses') 
-           ) )
+vax_age <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/vax_age_nis.parquet') 
 
 vax_urban <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Pulled%20Data/vax/peds_vax.parquet')  %>%
   rename(birth_year = `Birth Year/Birth Cohort`, dim1=`Dimension Type`, urban=Dimension,vax_uptake=`Estimate (%)`, samp_size_vax=`Sample Size`) %>%
@@ -1163,7 +1149,7 @@ vax_insurance <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/
   mutate(insurance= factor(insurance, levels= c("Uninsured", "Any Medicaid","Private Insurance Only","Other"),labels=c('Uninsured','Medicaid', 'Private','Other') ))
 
 
-
+vax_epic <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/vax_age_cosmos.parquet') 
 ```
 
 ```{r vax_plots}
@@ -1174,11 +1160,11 @@ output$vax_urban_plot <- renderPlotly({
   
   plot_vax <- vax_urban %>% 
     filter(Vaccine==input$select.vax2) %>% mutate(vax_order=as.numeric(as.factor(Vaccine)), Vaccine_dose=as.factor(paste(Vaccine,Dose)) ) %>% 
-    ggplot(aes(x = vax_uptake, y = urban, 
+    ggplot(aes(x = Outcome_value1, y = urban, 
                text=paste0(Geography, "<br>", 
                            Vaccine_dose, "<br>",
-                           vax_uptake, "%" ))) +
-    geom_jitter(aes( color = vax_uptake), height = 0.1, width = 0, alpha = 0.7) + 
+                           Outcome_value1, "%" ))) +
+    geom_jitter(aes( color = Outcome_value1), height = 0.1, width = 0, alpha = 0.7) + 
     #scale_size(range = c(2, 5), name="Uptake (%)")+
     scale_color_viridis_c(option = "viridis", direction=-1) +
     labs(title = "Vaccination Rates by State, 35 months of age", x = "Vaccination Rate (%)", y = '') + 
@@ -1218,23 +1204,69 @@ output$vax_insurance_plot <- renderPlotly({
 ::: panel-tabset
 ### Uptake by state
 
-```{r, fig.width=5, fig.height=7}
-plot_vax <- vax_age %>% mutate(vax_order=as.numeric(as.factor(Vaccine)), Vaccine_dose=as.factor(paste(Vaccine,Dose)) ) %>% 
-  ggplot(aes(x = vax_uptake, y = Vaccine_dose, 
+```{r}
+#| context: server
+
+output$vax_state_plot <- renderPlotly({
+
+plot_vax <- vax_age %>% 
+  filter(age==input$nis.vax.age.select & Geography %in% c(state.name,'District of Columbia') & birth_year=='2021') %>%
+  mutate(vax_order=as.numeric(as.factor(Vaccine)), Vaccine_dose=as.factor(paste(Vaccine,Dose)) ,
+         Vaccine_dose = gsub('NA','',Vaccine_dose)) %>% 
+  ggplot(aes(x = Outcome_value1, y = Vaccine_dose, 
              text=paste0(Geography, "<br>", 
                          Vaccine_dose, "<br>",
                          'Age: ',age, "<br>", 
-                         vax_uptake, "%" ))) +
-  geom_jitter(aes( color = vax_uptake), height = 0.25, width = 0, alpha = 0.7) + 
+                         Outcome_value1, "%" ))) +
+  geom_jitter(aes( color = Outcome_value1), height = 0.25, width = 0, alpha = 0.7) + 
   #scale_size(range = c(2, 5), name="Uptake (%)")+ 
-    scale_color_viridis_c(option = "viridis", direction=-1) +
-  labs(title = "Vaccination Rates by State, 35 months of age", x = "Vaccination Rate (%)", y = '') + 
+  scale_color_viridis_c(option = "viridis", direction=-1) +
+  labs(title = paste0("Vaccination Rates by State, " ,input$nis.vax.age.select ), x = "Vaccination Rate (%)", y = '') + 
   theme_minimal() + 
   scale_y_discrete(expand = expansion(mult = c(.1, .1))) + # Add more space between rows 
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), axis.title.y = element_text(angle = 0, vjust = 0.5))
 
 ggplotly(plot_vax, tooltip='text')
+})
+
+
+
+output$vax_state_plot_epic_age <- renderPlotly({
+plot_vax_epic <- vax_epic  %>% 
+  filter(age_level != '<1 Years') %>%
+  filter( geography %in% c(state.name,'District of Columbia') ) %>%
+  
+  ggplot(aes(x = Outcome_value1, y = age_level, 
+             text=paste0(geography, "<br>", 
+                         'Age: ',age_level, "<br>", 
+                         Outcome_value1, "%" ))) +
+  geom_jitter(aes( color = Outcome_value1), height = 0.25, width = 0, alpha = 0.7) + 
+  #scale_size(range = c(2, 5), name="Uptake (%)")+ 
+  scale_color_viridis_c(option = "viridis", direction=-1) +
+  labs(title = paste0("MMR Immunization (any dose) Rates by State, "  ), x = "Vaccination Rate (%)", y = '') + 
+  theme_minimal() + 
+  scale_y_discrete(expand = expansion(mult = c(.1, .1))) + # Add more space between rows 
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), axis.title.y = element_text(angle = 0, vjust = 0.5))
+
+ggplotly(plot_vax_epic, tooltip='text')
+})
 ```
+
+```{r}
+selectInput("nis.vax.age.select", "Age:", 
+            choices=c("13 Months"   ,'24 Months',"35 Months"), selected='24 Months')
+```
+
+
+```{r}
+#| panel: fill
+#| layout-ncol: 1
+#| height: 1200px
+
+plotlyOutput("vax_state_plot")
+
+```
+
 
 ### Uptake by urbanicity
 
