@@ -117,19 +117,19 @@ This platform is designed to give its users timely, clear, and useful insights i
 
 url_files <- 'https://raw.githubusercontent.com/ysph-dsde/PopHIVE_DataHub/refs/heads/main/Data/Plot%20Files/'
 
-nrevss_rsv_ts <- read_csv(paste0(url_files,'rsv_ts_nrevss_test_rsv.csv')) 
+nrevss_rsv_ts <- read_csv(paste0(url_files,'NREVSS/rsv_ts_nrevss_test_rsv.csv')) 
 
-rsv_all_indicators_state <- read_csv(paste0(url_files,'rsv_combined_all_outcomes_state.csv'))
+rsv_all_indicators_state <- read_csv(paste0(url_files,'Comparisons/rsv_combined_all_outcomes_state.csv'))
 
-flu_all_indicators_state <- read_csv(paste0(url_files,'flu_combined_all_outcomes_state.csv'))
+flu_all_indicators_state <- read_csv(paste0(url_files,'Comparisons/flu_combined_all_outcomes_state.csv'))
 
-covid_all_indicators_state <- read_csv(paste0(url_files,'covid_combined_all_outcomes_state.csv'))
+covid_all_indicators_state <- read_csv(paste0(url_files,'Comparisons/covid_combined_all_outcomes_state.csv'))
 
-rsvnet_age <- read_csv(paste0(url_files,'rsv_hosp_age_respnet.csv'))
+rsvnet_age <- read_csv(paste0(url_files,'RESP-NET%20Programs/rsv_hosp_age_respnet.csv'))
 
-epic_ed_combo <- read_csv(paste0(url_files,'rsv_flu_covid_epic_cosmos_age_state.csv'))
+epic_ed_combo <- read_csv(paste0(url_files,'Cosmos%20ED/rsv_flu_covid_epic_cosmos_age_state.csv'))
 
-rsv_flu_covid_county_filled_nssp <- read_csv(paste0(url_files,'rsv_flu_covid_county_filled_map_nssp.csv'))
+rsv_flu_covid_county_filled_nssp <- read_csv(paste0(url_files,'Cosmos%20ED/rsv_flu_covid_county_filled_map_nssp.csv'))
 ```
 
 ```{r rsv_plots}
@@ -1488,7 +1488,7 @@ Data are from Epic Cosmos. Diabetes is defined based on having had a hemoglobin 
 #data from WISQARS dashboard; manual download 2/27/2025
 #Self-Harm All Causes Nonfatal Emergency Department Visits and Rates per 100,000 ;Data Years: 2001 to 2022, United States, 0 to 4 through 15 to 19, Males, Females, Disposition: All Cases
 
-s1 <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/wisqars_self_harm.csv') %>%
+s1 <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/wisqars/wisqars_self_harm.csv') %>%
   filter( age_level %in% c('10 to 14','15 to 19','20 to 24', '25 to 29')) 
 
 ```
@@ -1767,7 +1767,7 @@ waffle_2022 <- subset %>%
 ```{r google_data}
 #| context: server
 
-g1_overdose <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Archive/google_overdose/OD_search_state_recent12m.csv') %>%
+g1_overdose <- read.csv('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/fb87332d397204e7d7f8472b0cdaf0c9788f34a7/Data/Pulled%20Data/Google%20Overdose/OD_search_state_recent12m.csv') %>%
   group_by(state) %>%
     mutate( Volume=100*naloxone_search_12m/max(naloxone_search_12m, na.rm=T),
            Volume=round(Volume),
