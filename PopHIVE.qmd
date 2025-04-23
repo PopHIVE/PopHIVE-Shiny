@@ -1316,7 +1316,7 @@ Variation in vaccine uptake rates based on insurance status
 ```{r}
 #| context: data
 
-diab_obesity <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/repo_reorg/Data/Archive/Cosmos%20ED/diabetes_obesity.parquet')
+diab_obesity <- read_parquet('https://github.com/ysph-dsde/PopHIVE_DataHub/raw/refs/heads/main/Data/Plot%20Files/Cosmos%20ED/diabetes_obesity.parquet')
 
 ```
 
