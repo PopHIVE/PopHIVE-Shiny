@@ -115,6 +115,7 @@ This platform is designed to give its users timely, clear, and useful insights i
 #| context: data
 #| include: false
 
+
 url_files <- 'https://raw.githubusercontent.com/ysph-dsde/PopHIVE_DataHub/refs/heads/main/Data/Plot%20Files/'
 
 nrevss_rsv_ts <- read_csv(paste0(url_files,'NREVSS/rsv_ts_nrevss_test_rsv.csv')) 
@@ -288,7 +289,7 @@ ggplotly(p1)
 
 
 selectInput("state.select2", "State:", 
-            choices=state.name, selected='New York')
+            choices=unique(epic_ed_combo$geography), selected='New York')
 ```
 
 ```{r}
@@ -549,7 +550,7 @@ output$epicMapflu <- renderPlotly({
 
 
 selectInput("state.select2.flu", "State:", 
-            choices=state.name, selected='New York')
+            choices=unique(epic_ed_combo$geography), selected='New York')
 ```
 
 ```{r}
@@ -770,7 +771,7 @@ output$epicMapcovid <- renderPlotly({
 
 
 selectInput("state.select2.covid", "State:", 
-            choices=state.name, selected='New York')
+            choices=unique(epic_ed_combo$geography), selected='New York')
 ```
 
 ```{r}
