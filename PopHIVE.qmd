@@ -1182,7 +1182,7 @@ output$vax_urban_plot <- renderPlotly({
 output$vax_insurance_plot <- renderPlotly({
   
   plot_ins <- vax_insurance %>% 
-    filter(Vaccine==input$select.vax2) %>% mutate(vax_order=as.numeric(as.factor(Vaccine)),  
+    filter(Vaccine==input$select.vax3) %>% mutate(vax_order=as.numeric(as.factor(Vaccine)),  
                                                   Vaccine_dose=as.factor(paste(Vaccine,Dose)) ) %>% 
     ggplot(aes(x = vax_uptake, y = insurance, 
                text=paste0(Geography, "<br>", 
@@ -1292,6 +1292,13 @@ plotlyOutput("vax_urban_plot")
 Variation in vaccine uptake based on how urban an area is. Uptake in non-urban, smaller urban, larger urban locations
 
 ### Uptake based on insurance status
+
+```{r}
+
+
+selectInput("select.vax3", "Vaccine:", 
+            choices=unique(vax_insurance$Vaccine), selected='PCV')
+```
 
 ```{r}
 #| panel: fill
