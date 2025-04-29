@@ -1161,11 +1161,11 @@ output$vax_urban_plot <- renderPlotly({
   
   plot_vax <- vax_urban %>% 
     filter(Vaccine==input$select.vax2) %>% mutate(vax_order=as.numeric(as.factor(Vaccine)), Vaccine_dose=as.factor(paste(Vaccine,Dose)) ) %>% 
-    ggplot(aes(x = Outcome_value1, y = urban, 
+    ggplot(aes(x = vax_uptake, y = urban, 
                text=paste0(Geography, "<br>", 
                            Vaccine_dose, "<br>",
-                           Outcome_value1, "%" ))) +
-    geom_jitter(aes( color = Outcome_value1), height = 0.1, width = 0, alpha = 0.7) + 
+                           vax_uptake, "%" ))) +
+    geom_jitter(aes( color = vax_uptake), height = 0.1, width = 0, alpha = 0.7) + 
     #scale_size(range = c(2, 5), name="Uptake (%)")+
     scale_color_viridis_c(option = "viridis", direction=-1) +
     labs(title = "Vaccination Rates by State, 35 months of age", x = "Vaccination Rate (%)", y = '') + 
@@ -1372,7 +1372,7 @@ ggplotly(obesity_age_p)
 
 
 selectInput("state.select.obesity_epic", "State:", 
-            choices=state.name, selected='New York', multiple=T)
+            choices=unique(diab_obesity$geography), selected='United States', multiple=T)
 ```
 
 ```{r}
@@ -1457,7 +1457,7 @@ ggplotly(diabetes_age_p)
 
 
 selectInput("state.select.diabetes_epic", "State:", 
-            choices=state.name, selected='New York', multiple = T)
+            choices=unique(diab_obesity$geography), selected='United States', multiple = T)
 ```
 
 ```{r, fig.width=8, fig.height=8}
