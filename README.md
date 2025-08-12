@@ -6,6 +6,8 @@ Enclosed is the code for an interim first PopHIVE prototype dashboard, version 1
 
 The was originally developed in a [YSPH Data Science and Data Equity](https://github.com/ysph-dsde) (YSPH-DSDE) GitHub Organization repository and was copied into the [PopHIVE](https://github.com/PopHIVE) GitHub Organization Aug 12th, 2025. At the time of transfer, the YSPH-DSDE GitHub Organization codebase was no longer being actively contributed to and had been archived.
 
+The dashboard deployment can be found here: https://weinbergerlab.shinyapps.io/pophive_test/.
+
 **Dates active:** April 11th – May 9th, 2025
 
 &nbsp;
